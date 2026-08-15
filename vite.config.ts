@@ -29,6 +29,22 @@ export default defineConfig(({ mode }) => {
           target: API_ORIGIN,
           changeOrigin: true,
           //rewrite: (path) => path.replace(/^\/api/, '')
+        },
+        '/oauth2': {
+          target: API_ORIGIN,
+          changeOrigin: true,
+        },
+        '/login/oauth2': {
+          target: API_ORIGIN,
+          changeOrigin: true,
+        },
+        '/auth/decide': {
+          target: API_ORIGIN,
+          changeOrigin: true,
+        },
+        '/succesful-payment': {
+          target: API_ORIGIN,
+          changeOrigin: true,
         }
       }
     }

@@ -2,10 +2,8 @@ import { checkIcon } from "@/assets/icons";
 import { useGSAP } from "@gsap/react";
 
 const AuthStep4 = ({ tl }: { step: number, currentStep: number, setCurrentStep: React.Dispatch<React.SetStateAction<number>>, tl: GSAPTimeline }) => {
-  const API_ORIGIN = import.meta.env.VITE_API_ORIGIN
-
   setTimeout(() => {
-    window.location.href = `${API_ORIGIN}/oauth2/authorization/github`;
+    window.location.href = "/oauth2/authorization/github";
   }, 2 * 1000)
 
 
