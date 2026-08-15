@@ -3,7 +3,6 @@ package com.back.app.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,14 +56,5 @@ public class ReservationSchedulerService {
                         reservation.getReservationId(), e.getMessage(), e);
             }
         }
-    }
-
-    /**
-     * Optional: Run more frequently for testing
-     */
-    @Scheduled(fixedRate = 30000) // Every 30 seconds (for testing)
-    public void processEndedReservationsFrequent() {
-        // Same logic, but more frequent
-        processEndedReservations();
     }
 }

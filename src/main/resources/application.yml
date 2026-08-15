@@ -3,11 +3,13 @@ spring:
     name: springboot
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5431/gsadmin
-    username: postgres
-    password: 1234
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5431/gsadmin}
+    username: ${DATABASE_USERNAME:postgres}
+    password: ${DATABASE_PASSWORD:1234}
     hikari:
-      maximum-pool-size: 10
+      maximum-pool-size: 5
+      minimum-idle: 0
+      idle-timeout: 60000
       connection-timeout: 30000
       initialization-fail-timeout: 0
   jpa:
@@ -22,20 +24,30 @@ spring:
   sql:
     init:
       mode: never
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 10MB
   security:
     oauth2:
       client:
         registration:
           github:
-            client-id: Ov23liwzLxCF1uF0IPKt
-            client-secret: 62f7ae3bd6ffee671e4ae73ebd31292271fc092c
+            client-id: ${GITHUB_CLIENT_ID:}
+            client-secret: ${GITHUB_CLIENT_SECRET:}
             scope: user:email,read:user
+            redirect-uri: "${OAUTH_REDIRECT_URI:{baseUrl}/login/oauth2/code/{registrationId}}"
           #google:
             #client-id: GOOGLE_CLIENT_ID
             #client-secret: GOOGLE_CLIENT_SECRET
 
 server:
   forward-headers-strategy: native
+  servlet:
+    session:
+      cookie:
+        secure: true
+        same-site: lax
 
 logging:
   level:
@@ -44,12 +56,12 @@ logging:
 
 stripe:
   api:
-    key: sk_test_51SQG7jJUCZ7JkCbcvmhBETWJQAahxavmFyqdVy94kKqNAsfq6XrhcIcyOKw52McNsECEFSTNg1zCVtWYhLMUlF5d00c6RHUEs7
+    key: ${STRIPE_API_KEY:}
   connect:
     platform_fee_percent: 10  # Platform fee percentage (10% default)
 
 app:
   frontend:
-    url: "http://localhost:5173"
+    url: ${APP_FRONTEND_URL:http://localhost:5173}
   backend:
-    url: "http://localhost:8080"
+    url: ${APP_BACKEND_URL:http://localhost:8080}
