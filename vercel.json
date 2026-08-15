@@ -1,10 +1,10 @@
 {
   "rewrites": [
-    { "source": "/api/:path*",          "destination": "https://gearshare-backend.onrender.com/api/:path*" },
-    { "source": "/oauth2/:path*",       "destination": "https://gearshare-backend.onrender.com/oauth2/:path*" },
-    { "source": "/login/oauth2/:path*", "destination": "https://gearshare-backend.onrender.com/login/oauth2/:path*" },
-    { "source": "/auth/decide",         "destination": "https://gearshare-backend.onrender.com/auth/decide" },
-    { "source": "/succesful-payment",   "destination": "https://gearshare-backend.onrender.com/succesful-payment" },
-    { "source": "/:path*",              "destination": "/index.html" }
+    { "source": "/api/(.*)",          "destination": "https://gearshare-api.onrender.com/api/$1" },
+    { "source": "/oauth2/(.*)",       "destination": "https://gearshare-api.onrender.com/oauth2/$1" },
+    { "source": "/login/oauth2/(.*)", "destination": "https://gearshare-api.onrender.com/login/oauth2/$1" },
+    { "source": "/auth/decide",       "destination": "https://gearshare-api.onrender.com/auth/decide" },
+    { "source": "/succesful-payment", "destination": "https://gearshare-api.onrender.com/succesful-payment" },
+    { "source": "/(.*)",              "destination": "/index.html" }
   ]
 }
