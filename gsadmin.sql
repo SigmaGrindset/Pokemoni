@@ -109,8 +109,8 @@ INSERT INTO account (oauth2_id, user_email, user_first_name, user_last_name, use
 ('3', 'charlie.t@mail.com', 'Charlie', 'Trader', '555-1003', 'charlie.contact@mail.com', 'New York', 'trader', 4.4),    -- 3 (Trader)
 ('4', 'gear.hire@global.com', 'George', 'Gear', '555-1004', 'george.contact@global.com', 'Berlin', 'trader', 4.1),      -- 4 (Trader)
 ('5', 'jane.doe@mail.com', 'Jane', 'Doe', '555-1005', 'jane.contact@mail.com', 'Tokyo', 'buyer', NULL),                 -- 5 (Buyer)
-('6', 'nh55636@fer.hr', 'Nikola', 'Horvat', '0917343740', 'nikola.contact@fer.hr', 'Zagreb', 'admin', NULL),            -- 6 (Admin)
-('7', 'lk55939@fer.hr', 'Leon', 'Katic', '0999999999', 'leon.contact@fer.hr', 'Zagreb', 'admin', NULL);                 -- 7 (Admin)
+('6', 'replace-me@example.com', 'Site', 'Owner', '555-1006', 'owner.contact@example.com', 'Zagreb', 'admin', NULL),      -- 6 (Admin - placeholder; repoint user_email to your own GitHub email after loading)
+('7', 'nina.kovac@example.com', 'Nina', 'Kovac', '555-1007', 'nina.contact@example.com', 'Zagreb', 'admin', NULL);       -- 7 (Admin)
 -- Insert into itemtype
 INSERT INTO itemtype (itemtype_name) VALUES
 ('Skis'),                    -- 1
@@ -328,7 +328,7 @@ INSERT INTO report (reporter_id, reported_id, report_details, report_status) VAL
 -- Charlie (Trader) reports Jane (Buyer)
 (3, 5, 'User cancelled last minute and refused to pay the cancellation fee.', 'dismissed'),
 
--- Nikola (Admin) logs a report against a suspicious account
+-- Admin (account 6) logs a report against a suspicious account
 (6, 13, 'Suspicious activity detected on this account. Investigating for fraud.', 'pending');
 
 
