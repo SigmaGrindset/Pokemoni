@@ -1,10 +1,10 @@
 {
   "rewrites": [
-    { "source": "/api/(.*)",          "destination": "https://gearshare-api.onrender.com/api/$1" },
-    { "source": "/oauth2/(.*)",       "destination": "https://gearshare-api.onrender.com/oauth2/$1" },
-    { "source": "/login/oauth2/(.*)", "destination": "https://gearshare-api.onrender.com/login/oauth2/$1" },
-    { "source": "/auth/decide",       "destination": "https://gearshare-api.onrender.com/auth/decide" },
-    { "source": "/succesful-payment", "destination": "https://gearshare-api.onrender.com/succesful-payment" },
+    { "source": "/api/(.*)",          "destination": "https://gearshare-api-sigmagrindset.onrender.com/api/$1" },
+    { "source": "/oauth2/(.*)",       "destination": "https://gearshare-api-sigmagrindset.onrender.com/oauth2/$1" },
+    { "source": "/login/oauth2/(.*)", "destination": "https://gearshare-api-sigmagrindset.onrender.com/login/oauth2/$1" },
+    { "source": "/auth/decide",       "destination": "https://gearshare-api-sigmagrindset.onrender.com/auth/decide" },
+    { "source": "/succesful-payment", "destination": "https://gearshare-api-sigmagrindset.onrender.com/succesful-payment" },
     { "source": "/(.*)",              "destination": "/index.html" }
   ]
 }
