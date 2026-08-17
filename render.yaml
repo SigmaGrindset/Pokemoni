@@ -1,0 +1,43 @@
+services:
+  - name: gearshare-api-sigmagrindset
+    type: web
+    runtime: docker
+    plan: free
+    region: frankfurt
+    branch: deploy-backend
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    autoDeploy: true
+    envVars:
+      # --- Public by design: safe to commit to a public fork ---
+      # The client ID appears in the GitHub authorize URL. It must be non-empty
+      # or Spring fails context refresh and the container exits 1.
+      - key: GITHUB_CLIENT_ID
+        value: Ov23li8nuRjUud75njO2
+      - key: OAUTH_REDIRECT_URI
+        value: https://gearshare-ivory.vercel.app/login/oauth2/code/github
+      # Both URLs are the VERCEL domain, never the Render one. Every URL the
+      # backend hands to a browser or to Stripe must be reachable first-party
+      # through the proxy. The Render host appears only in vercel.json.
+      - key: APP_FRONTEND_URL
+        value: https://gearshare-ivory.vercel.app
+      - key: APP_BACKEND_URL
+        value: https://gearshare-ivory.vercel.app
+
+      # --- Prompted at Blueprint apply; never stored in this repo ---
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_USERNAME
+        sync: false
+      - key: DATABASE_PASSWORD
+        sync: false
+      - key: GITHUB_CLIENT_SECRET
+        sync: false
+      - key: STRIPE_API_KEY
+        sync: false
+
+    # No healthCheckPath on purpose: every candidate route needs the database,
+    # so a slow Neon wake would fail an otherwise-good deploy. Render's default
+    # port-open check already fires only after Spring finishes context refresh.
+    #
+    # PORT is deliberately absent - Render injects it, the Dockerfile reads it.
