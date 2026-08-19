@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import useAuthContext from "@/hooks/useAuthContext";
 import Button from "@/components/Button";
 import { useNavigate } from "react-router-dom";
-import noImage from "../assets/images/no-image.png"
+import { avatarFallback } from "@/lib/avatar"
 
 const Nav = () => {
   const location = useLocation();
@@ -86,8 +86,8 @@ const Nav = () => {
               >
                 <img
                   src={`/api/accounts/images/load/${user.accountId}`}
-                  onError={(e) => (e.currentTarget.src = noImage)}
-                  alt="no image available"
+                  onError={avatarFallback(user.userFirstName, user.userLastName)}
+                  alt={`${user.userFirstName ?? ""} ${user.userLastName ?? ""}`.trim() || "Profile"}
                   className={profileImgClass}
                 />
               </button>

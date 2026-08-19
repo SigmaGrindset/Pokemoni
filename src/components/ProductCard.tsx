@@ -17,9 +17,12 @@ const ProductCard = ({ category, productName, owner, desc, price, advertisementI
         {category}
       </div>
       <a href={`/advertisement/${advertisementId}`}>
-        <object data={`/api/advertisements/images/load/${advertisementId}`} className="w-full h-[225px] object-cover rounded-t-[8px]" type="image/jpg">
-          <img src={noImage} alt="no image available" className="w-full h-[225px] object-cover rounded-t-[8px]" />
-        </object>
+        <img
+          src={`/api/advertisements/images/load/${advertisementId}`}
+          onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = noImage; }}
+          alt={productName}
+          className="w-full h-[225px] object-cover rounded-t-[8px]"
+        />
       </a>
 
       <div className="bg-[#222423] rounded-[8px] p-6 mt-[-8px] relative shadow-[0_-4px_4px_rgba(0,0,0,0.25)]">
