@@ -2,6 +2,7 @@ package com.back.app.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -24,6 +25,10 @@ public class SecurityConfig {
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
         .authorizeHttpRequests(authorize -> authorize
+            // Image uploads must stay above the permitAll rules below: first match wins.
+            // Reading images stays public; only writing them requires a session.
+            .requestMatchers(HttpMethod.POST, "/api/accounts/images/store/**",
+                "/api/advertisements/images/store/**").authenticated()
             .requestMatchers("/", "/login", "/error", "/api/advertisements/**", "/api/itemtypes/**","/api/reservations/**").permitAll()
             .requestMatchers("/api/accounts/{id}", "/api/accounts/", "/api/accounts/create","/api/accounts/images/**").permitAll()
             .requestMatchers("/checkout/hosted").permitAll()

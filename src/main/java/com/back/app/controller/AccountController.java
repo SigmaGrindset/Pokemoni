@@ -265,15 +265,38 @@ public class AccountController {
     }
   }
 
+  /**
+   * True when the caller is the account they are targeting, or an admin.
+   * The route is already {@code .authenticated()}, so the principal is normally
+   * present; the null checks keep this safe if that ever changes.
+   */
+  private boolean isOwnerOrAdmin(HttpServletRequest request, Integer id) {
+    if (request.getUserPrincipal() == null) {
+      return false;
+    }
+    if (request.isUserInRole("ADMIN")) {
+      return true;
+    }
+    Account caller = accountService.getAccountByOAuth2Id(request.getUserPrincipal().getName());
+    return caller != null && caller.getAccountId().equals(id);
+  }
+
   @PostMapping("/images/store/{id}")
   public ResponseEntity<Map<String, String>> storeProfileImage(
       @RequestParam("file") MultipartFile file,
-      @PathVariable Integer id) {
+      @PathVariable Integer id,
+      HttpServletRequest request) {
     try {
       Account account = accountService.getUserbyId(id);
       if (account == null) {
         log.error("Error loading image for account {}: Account doesn't exist", id);
         return ResponseEntity.notFound().build();
+      }
+
+      if (!isOwnerOrAdmin(request, id)) {
+        log.warn("Rejected profile image upload for account {}: caller is not the owner", id);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+            .body(Map.of("error", "You may only change your own profile image"));
       }
 
       String filename = "profile" + id.toString();

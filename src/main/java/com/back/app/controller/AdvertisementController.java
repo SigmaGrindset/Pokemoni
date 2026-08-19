@@ -26,8 +26,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.back.app.model.Account;
 import com.back.app.model.AdverNoJoin;
 import com.back.app.model.Advertisement;
+import com.back.app.service.AccountService;
 import com.back.app.service.AdvertisementService;
 import com.back.app.service.DateInterval;
 import com.back.app.service.ImageFolder;
@@ -37,6 +39,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -51,6 +54,7 @@ public class AdvertisementController {
   private final AdvertisementService advertisementService;
   private final ReservationService reservationService;
   private final ImageStorageService imageStorageService;
+  private final AccountService accountService;
 
   @Operation(summary = "Retrieve all advertisements", description = "Returns a comprehensive, unfiltered list of all active advertisement listings.")
   @GetMapping("/")
@@ -162,16 +166,40 @@ public class AdvertisementController {
     return ResponseEntity.ok().body("Succesfuly deleted advertisement with id " + id.toString());
   }
 
+  /**
+   * True when the caller owns the listing they are targeting, or is an admin.
+   * The route is already {@code .authenticated()}, so the principal is normally
+   * present; the null checks keep this safe if that ever changes.
+   */
+  private boolean isOwnerOrAdmin(HttpServletRequest request, Advertisement ad) {
+    if (request.getUserPrincipal() == null) {
+      return false;
+    }
+    if (request.isUserInRole("ADMIN")) {
+      return true;
+    }
+    Account caller = accountService.getAccountByOAuth2Id(request.getUserPrincipal().getName());
+    return caller != null && ad.getTrader() != null
+        && caller.getAccountId().equals(ad.getTrader().getAccountId());
+  }
+
   @PostMapping("/images/store/{id}")
   public ResponseEntity<Map<String, String>> storeItemImage(
       @RequestParam("file") MultipartFile file,
-      @PathVariable Integer id) {
+      @PathVariable Integer id,
+      HttpServletRequest request) {
 
     try {
       Advertisement ad = advertisementService.getAdvertisementbyId(id);
       if (ad == null) {
         log.error("Error loading image for advertisement {}: Advertisement doesn't exist or has no image\"", id);
         return ResponseEntity.notFound().build();
+      }
+
+      if (!isOwnerOrAdmin(request, ad)) {
+        log.warn("Rejected item image upload for advertisement {}: caller is not the owner", id);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+            .body(Map.of("error", "You may only change images on your own listings"));
       }
 
       String filename = "item" + id.toString();
