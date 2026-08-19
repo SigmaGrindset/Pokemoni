@@ -232,12 +232,22 @@ public class AdvertisementController {
       }
 
       String filename = ad.getItemImagePath().replace("/" + ImageFolder.ADVERTISEMENT.getFolderName() + "/", "");
-      log.info("Loading profile image: {}", filename);
+      log.info("Loading item image: {}", filename);
+
+      Path filePath = imageStorageService.getUploadDir(ImageFolder.ADVERTISEMENT).resolve(filename);
+      if (!Files.isReadable(filePath)) {
+        // A row pointing at a file that isn't on disk is a 404, not a 500. The frontend
+        // falls back to its placeholder either way, but a 500 hides genuine faults.
+        log.warn("No image file on disk for advertisement {}: {}", id, filename);
+        return ResponseEntity.notFound().build();
+      }
 
       Resource resource = imageStorageService.loadImage(filename, ImageFolder.ADVERTISEMENT);
 
-      Path filePath = imageStorageService.getUploadDir(ImageFolder.ADVERTISEMENT).resolve(filename);
       String contentType = Files.probeContentType(filePath);
+      if (contentType == null) {
+        contentType = "image/jpeg";
+      }
 
       return ResponseEntity.ok()
           .contentType(MediaType.parseMediaType(contentType))
