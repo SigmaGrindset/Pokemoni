@@ -28,7 +28,9 @@ public class GeocodingService {
             System.out.println("URL: " + url);
 
             HttpHeaders headers = new HttpHeaders();
-            headers.set("User-Agent", "GearShare/1.0 (contact: leonard.kovac@fer.hr)");
+            // Nominatim requires a contact that identifies the app. The site URL satisfies
+            // that without putting a personal address in a public repo.
+            headers.set("User-Agent", "GearShare/1.0 (+https://gearshare-ivory.vercel.app)");
             headers.set("Accept", "application/json");
             headers.set("Accept-Language", "hr,en;q=0.8");
 
